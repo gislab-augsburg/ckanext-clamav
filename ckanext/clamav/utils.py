@@ -33,6 +33,8 @@ def scan_file_for_viruses(data_dict: dict[str, Any]):
         logic.ValidationError: returns a validation error to the user
         upload form
     """
+    log.info("MB_check_clamav")
+    
     upload_unscanned: bool = tk.asbool(
         tk.config.get(c.CLAMAV_CONF_UPLOAD_UNSCANNED, c.CLAMAV_CONF_UPLOAD_UNSCANNED_DF)
     )
