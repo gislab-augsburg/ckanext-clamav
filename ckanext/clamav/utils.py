@@ -75,7 +75,7 @@ def scan_file_for_viruses(data_dict: dict[str, Any]):
         raise logic.ValidationError({"Virus checker": [error_msg]})
 
     else: 
-        log.info("MB_clamav_05: file was scanned?")
+        log.info("MB_clamav_06: file was scanned?")
 
 
 def _get_package_id(data_dict: dict[str, Any]) -> str:
@@ -108,13 +108,13 @@ def _scan_filestream(file: FileStorage) -> tuple[str, Optional[str]]:
 
     cd: Union[ClamdUnixSocket, ClamdNetworkSocket] = _get_conn()
 
-    log.info("MB_clamav_03")
+    log.info("MB_clamav_04")
     log.info(cd)
     log.info(file)
 
     try:
         scan_result: dict[str, tuple[str, str | None]] | None  = cd.instream(file.stream)
-        log.info("MB_clamav_04")
+        log.info("MB_clamav_05")
         log.info(scan_result)
     except BufferTooLongError:
         error_msg: str = (
@@ -164,6 +164,10 @@ def _get_conn() -> Union[ClamdUnixSocket, CustomClamdNetworkSocket]:
         socket_path: str = tk.config.get(
             c.CLAMAV_CONF_SOCKET_PATH, c.CLAMAV_CONF_SOCKET_PATH_DF
         )
+        log.info("MB_clamav_03-1")
+        log.info(socket_path)
+        log.info(conn_timeout)
+        log.info(ClamdUnixSocket(socket_path, conn_timeout))
         return ClamdUnixSocket(socket_path, conn_timeout)
 
     tcp_host: str = tk.config.get(c.CLAMAV_CONF_SOCK_TCP_HOST)
@@ -174,6 +178,10 @@ def _get_conn() -> Union[ClamdUnixSocket, CustomClamdNetworkSocket]:
             "Clamd: please, provide TCP/IP host:port for ClamAV"
         )
 
+    log.info("MB_clamav_03-2")
+    log.info(socket_path)
+    log.info(conn_timeout)
+    log.info(CustomClamdNetworkSocket(socket_path, conn_timeout))
     return CustomClamdNetworkSocket(tcp_host, tcp_port, conn_timeout)
 
 
