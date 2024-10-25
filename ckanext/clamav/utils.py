@@ -179,9 +179,10 @@ def _get_conn() -> Union[ClamdUnixSocket, CustomClamdNetworkSocket]:
         )
 
     log.info("MB_clamav_03-2")
-    log.info(socket_path)
+    log.info(tcp_host)
+    log.info(tcp_port)
     log.info(conn_timeout)
-    log.info(CustomClamdNetworkSocket(socket_path, conn_timeout))
+    log.info(CustomClamdNetworkSocket(tcp_host, tcp_port, conn_timeout))
     return CustomClamdNetworkSocket(tcp_host, tcp_port, conn_timeout)
 
 
