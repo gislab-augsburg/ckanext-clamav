@@ -33,13 +33,16 @@ def scan_file_for_viruses(data_dict: dict[str, Any]):
         logic.ValidationError: returns a validation error to the user
         upload form
     """
-    log.info("MB_check_clamav")
+    log.info("MB_clamav_02")
+    log.info(data_dict)
     
     upload_unscanned: bool = tk.asbool(
         tk.config.get(c.CLAMAV_CONF_UPLOAD_UNSCANNED, c.CLAMAV_CONF_UPLOAD_UNSCANNED_DF)
     )
 
     file: FileStorage = data_dict["upload"]
+    log.info("MB_clamav_03")
+    log.info(file)
     status: str
     signature: Optional[str]
     status, signature = _scan_filestream(file)
@@ -70,6 +73,9 @@ def scan_file_for_viruses(data_dict: dict[str, Any]):
         )
         log.warning(error_msg)
         raise logic.ValidationError({"Virus checker": [error_msg]})
+
+    else: 
+        log.info("MB_clamav_05: file was scanned?")
 
 
 def _get_package_id(data_dict: dict[str, Any]) -> str:
@@ -102,8 +108,14 @@ def _scan_filestream(file: FileStorage) -> tuple[str, Optional[str]]:
 
     cd: Union[ClamdUnixSocket, ClamdNetworkSocket] = _get_conn()
 
+    log.info("MB_clamav_03")
+    log.info(cd)
+    log.info(file)
+
     try:
         scan_result: dict[str, tuple[str, str | None]] | None  = cd.instream(file.stream)
+        log.info("MB_clamav_04")
+        log.info(scan_result)
     except BufferTooLongError:
         error_msg: str = (
             "the uploaded file exceeds the filesize limit "
