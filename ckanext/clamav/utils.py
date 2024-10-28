@@ -111,6 +111,7 @@ def _scan_filestream(file: FileStorage) -> tuple[str, Optional[str]]:
     log.info("MB_clamav_04")
     log.info(cd)
     log.info(file)
+    log.info(file.stream)
 
     try:
         scan_result: dict[str, tuple[str, str | None]] | None  = cd.instream(file.stream)
