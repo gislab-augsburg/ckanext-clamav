@@ -33,16 +33,13 @@ def scan_file_for_viruses(data_dict: dict[str, Any]):
         logic.ValidationError: returns a validation error to the user
         upload form
     """
-    log.info("MB_clamav_02")
-    log.info(data_dict)
     
     upload_unscanned: bool = tk.asbool(
         tk.config.get(c.CLAMAV_CONF_UPLOAD_UNSCANNED, c.CLAMAV_CONF_UPLOAD_UNSCANNED_DF)
     )
 
     file: FileStorage = data_dict["upload"]
-    log.info("MB_clamav_03")
-    log.info(file)
+    log.info(f"Scanning file {file.filename} for viruses and malware")
     status: str
     signature: Optional[str]
     status, signature = _scan_filestream(file)
@@ -74,8 +71,12 @@ def scan_file_for_viruses(data_dict: dict[str, Any]):
         log.warning(error_msg)
         raise logic.ValidationError({"Virus checker": [error_msg]})
 
-    else: 
-        log.info("MB_clamav_06: file was scanned?")
+    else:
+        success_msg: str = (
+            "Scan successful, no malware has been found. "
+            f"Filename: {file.filename}, signature: {signature}."
+        )
+        log.info(success_msg)
 
 
 def _get_package_id(data_dict: dict[str, Any]) -> str:
@@ -107,11 +108,6 @@ def _scan_filestream(file: FileStorage) -> tuple[str, Optional[str]]:
     """
 
     cd: Union[ClamdUnixSocket, ClamdNetworkSocket] = _get_conn()
-
-    log.info("MB_clamav_04")
-    log.info(cd)
-    log.info(file)
-    log.info(file.stream)
 
     try:
         scan_result: dict[str, tuple[str, str | None]] | None  = cd.instream(file.stream)
@@ -155,7 +151,7 @@ def _get_conn() -> Union[ClamdUnixSocket, CustomClamdNetworkSocket]:
         c.CLAMAV_CONF_SOCKET_TYPE, c.CLAMAV_CONF_SOCKET_TYPE_DF
     )
     conn_timeout: int = tk.asint(
-        tk.config.get(c.CLAMAV_CONF_CONN_TIMEOUT, c.CLAMAV_CONF_CONN_TIMEOUT_DF)
+        tk.config.get(c.CLAMAV_CONF_CONN_TIMEOUT, c.CLAMAV_CONF_CONN_TIMEOUT_DF)CLAMAV_CONF_CONN_TIMEOUT
     )
 
     if socket_type not in (c.CLAMAV_SOCK_UNIX, c.CLAMAV_SOCK_TCP):
@@ -165,10 +161,7 @@ def _get_conn() -> Union[ClamdUnixSocket, CustomClamdNetworkSocket]:
         socket_path: str = tk.config.get(
             c.CLAMAV_CONF_SOCKET_PATH, c.CLAMAV_CONF_SOCKET_PATH_DF
         )
-        log.info("MB_clamav_03-1")
-        log.info(socket_path)
-        log.info(conn_timeout)
-        log.info(ClamdUnixSocket(socket_path, conn_timeout))
+        log.info(f"Clamd connection timeout: {str(conn_timeout)}")
         return ClamdUnixSocket(socket_path, conn_timeout)
 
     tcp_host: str = tk.config.get(c.CLAMAV_CONF_SOCK_TCP_HOST)
