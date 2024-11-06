@@ -18,10 +18,6 @@ class ClamavPlugin(p.SingletonPlugin):
     # IUploader
 
     def get_resource_uploader(self, data_dict):
-
-        print("MB_check_clamav")
-        print(self)
-        print(data_dict)
         if not data_dict.get("upload"):
             return
 
