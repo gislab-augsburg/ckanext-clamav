@@ -151,7 +151,7 @@ def _get_conn() -> Union[ClamdUnixSocket, CustomClamdNetworkSocket]:
         c.CLAMAV_CONF_SOCKET_TYPE, c.CLAMAV_CONF_SOCKET_TYPE_DF
     )
     conn_timeout: int = tk.asint(
-        tk.config.get(c.CLAMAV_CONF_CONN_TIMEOUT, c.CLAMAV_CONF_CONN_TIMEOUT_DF)CLAMAV_CONF_CONN_TIMEOUT
+        tk.config.get(c.CLAMAV_CONF_CONN_TIMEOUT, c.CLAMAV_CONF_CONN_TIMEOUT_DF)
     )
 
     if socket_type not in (c.CLAMAV_SOCK_UNIX, c.CLAMAV_SOCK_TCP):
