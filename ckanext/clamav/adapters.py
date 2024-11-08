@@ -59,23 +59,23 @@ class CustomClamdNetworkSocket(ClamdNetworkSocket):
 
             chunk = buff.read(max_chunk_size)
 
-            # Get writable directory
+            # Define writable directory and dummy file with random string
             write_dir: str = tk.config.get(c.CLAMAV_CONF_WRITE_DIR)
+            random_str = ''.join(random.choice(string.ascii_letters) for i in range(8))
+            dummy_file = f'{write_dir}/{random_str}'
+            print('write dir and dummy file:')
+            print(write_dir)
+            print(dummy_file)
 
             while chunk:
                 size = struct.pack(b'!L', len(chunk))
                 self.clamd_socket.send(size + chunk)
                 chunk = buff.read(max_chunk_size)
                 
-                # Generate dummy file with random string
-                print('write dir for dummy file:')
-                print(write_dir)
-                random_str = ''.join(random.choice(string.ascii_letters) for i in range(8))
-                dummy_file = f'{write_dir}/{random_str}'
-                print(dummy_file)
+                # Generate dummy file
                 f = open(dummy_file, 'w')
+                f.write(random_str)
                 f.close()
-                os.remove(dummy_file)
 
             self.clamd_socket.send(struct.pack(b'!L', 0))
 
@@ -89,5 +89,6 @@ class CustomClamdNetworkSocket(ClamdNetworkSocket):
                 return {filename: (status, reason)}
         
         finally:
+            os.remove(dummy_file)
             self._close_socket()
             
