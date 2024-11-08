@@ -73,6 +73,9 @@ To install ckanext-clamav:
     # ( optional, default: 60)
     ckanext.clamav.timeout = 120
 
+    # Writable directory for tmp files used to prevent timeout error while scanning file stream.
+    ckanext.clamav.timeout = /your/writable/directory
+
 
 ## Developer installation
 
