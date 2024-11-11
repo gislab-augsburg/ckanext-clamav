@@ -13,3 +13,4 @@ CLAMAV_CONF_SOCK_TCP_HOST: str = "ckanext.clamav.tcp.host"
 CLAMAV_CONF_SOCK_TCP_PORT: str = "ckanext.clamav.tcp.port"
 CLAMAV_CONF_CONN_TIMEOUT: str = "ckanext.clamav.timeout"
 CLAMAV_CONF_CONN_TIMEOUT_DF: int = 60
+CLAMAV_CONF_WRITE_DIR: str = "ckanext.clamav.write_dir"
