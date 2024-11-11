@@ -68,6 +68,12 @@ def scan_file_for_viruses(data_dict: dict[str, Any]):
         )
         log.warning(error_msg)
         raise logic.ValidationError({"Virus checker": [error_msg]})
+    else:
+        success_msg: str = (
+            "Scan successful, no malware has been found. "
+            f"Filename: {file.filename}, signature: {signature}."
+        )
+        log.info(success_msg)
 
 
 def _get_package_id(data_dict: dict[str, Any]) -> str:
